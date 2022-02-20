@@ -1,3 +1,10 @@
-// import React from "react";
 
-export default () => <p>Hello World</p>;
+const IndexPage = () => (
+    <main>
+        <p>Welcome my page</p>
+        
+    </main>
+
+);
+
+export default IndexPage;
