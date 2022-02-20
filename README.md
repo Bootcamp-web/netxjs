@@ -6,8 +6,13 @@
 1. [ Creamos carpeta `pages` ](#schema4)
 1. [ Creamos el componente `Menu`y modificamos el archivo `index.tsx`](#schema5)
 1. [ Creamos la página `projects` ](#schema6)
-1. [ Ejecutamos Typescript ](#schema2)
-1. [ Ejecutamos Typescript ](#schema2)
+1. [ Creamos un `layout` para el Menú ](#schema7)
+1. [ Transicciones de react ](#schema7)
+1. [ Transicciones de react](#schema8)
+1. [ React-sweet-state ](#schema9)
+1. [ Creamos un botón reutilizable `MyButton`.](#schema10)
+1. [ Modificamos el archivo `Counter.tsx`](#schema11)
+1. [ Doc](#schema12)
 
 <hr>
 
@@ -124,7 +129,9 @@ export default () => (<main>
 
 );
 ~~~
+<hr>
 
+<a name="schema7"></a>
 
 # 7 Creamos un `layout` para el Menú
 - Creamos el archivo `_app.tsx`
@@ -173,7 +180,11 @@ const Projects = () => (
   
   export default Projects;
 ~~~
-# 7 Transicciones de react
+<hr>
+
+<a name="schema8"></a>
+
+# 8 Transicciones de react
 - Instalar:
 ~~~bash
 npm install react-transition-group @types/react-transition-group
@@ -234,8 +245,180 @@ export default MyApp;
       </style>
 ~~~
 
-# Docu
+<hr>
+
+<a name="schema9"></a>
+
+# 9 React-sweet-state
+- Instalamos 
+~~~
+npm i react-sweet-state
+~~~
+- Creamos el archivo `Counter.tsx`
+~~~tsx
+import { createStore, createHook } from 'react-sweet-state';
+
+const Store = createStore({
+  // value of the store on initialisation
+  initialState: {
+    count: 0,
+  },
+  // actions that trigger store mutation
+  actions: {
+    increment:
+      () =>
+      ({ setState, getState }) => {
+        // mutate state synchronously
+        setState({
+          count: getState().count + 1,
+        });
+      },
+  },
+  // optional, mostly used for easy debugging
+  name: 'counter',
+});
+
+export const useCounter = createHook(Store);
+~~~
+- Modificamos el `about.tsx`
+~~~tsx
+import React from 'react';
+import MyButtom from '../components/MyButtom';
+import {useCounter} from "../lib/Pokedex"
+
+const About= () => {
+  const [state, {increment}]= useCounter();
+  return(
+    <div>
+      <p>About</p>
+      <img src="https://estaticos.muyinteresante.es/media/cache/1140x_thumb/uploads/images/gallery/5beaba975bafe86f2c2b41c4/marvel-heroes_0.jpg" alt="" width= "500px" />
+      <MyButtom  text = "Add one"/>
+    </div>
+  
+  )
+
+}
+ 
+
+export default About;
+~~~
+<hr>
+
+<a name="schema10"></a>
+
+# 10 Creamos un botón reutilizable `MyButton`.
+Para cambiar el texto del botón y la función a ejecutar en el botón
+~~~ts
+import React from 'react';
+import { Button } from 'antd';
+
+
+const MyButtom = (props) => {
+    const {text, actionsButton} = props
+return(
+
+    <Button type="primary" onClick={actionsButton}>{text}</Button>
+)
+};
+
+export default MyButtom
+
+~~~
+
+<hr>
+
+<a name="schema11"></a>
+
+# 11 Modificamos el archivo `Counter.tsx`
+- 1º Para ponerle un decremento
+~~~ts
+import { createStore, createHook, defaults } from 'react-sweet-state';
+
+// if (typeof window !== 'undefined'){
+//   console.log( 'enable devtools')
+//   defaults.devtools=true
+// }
+
+
+const Store = createStore({
+  // value of the store on initialisation
+  initialState: {
+    count: 0,
+  },
+  // actions that trigger store mutation
+  actions: {
+    increment:
+      () =>
+      ({ setState, getState }) => {
+        // mutate state synchronously
+        setState({
+          count: getState().count + 1,
+        });
+      },
+      decrease:
+        () =>
+        ({ setState, getState }) => {
+          // mutate state synchronously
+          setState({
+            count: getState().count - 1,
+          });
+      },
+  },
+  // optional, mostly used for easy debugging
+  name: 'counter',
+});
+
+export const useCounter = createHook(Store);
+~~~
+- 2º Refactorizamos
+~~~ts
+import { createStore, createHook, defaults } from 'react-sweet-state';
+
+// if (typeof window !== 'undefined'){
+//   console.log( 'enable devtools')
+//   defaults.devtools=true
+// }
+
+const increment = (by = 1) =>({ setState, getState }) => {
+
+  setState({
+    count: getState().count + by,
+  });
+};
+
+const Store = createStore({
+  
+  initialState: {
+    count: 0,
+  },
+  
+  actions: {
+    increment,
+    decrease: (by=1) =>({dispatch})=>{
+      dispatch(increment(by *-1));
+
+    },
+      
+  },
+
+  name: 'counter',
+});
+
+export const useCounter = createHook(Store);
+~~~
+- 3º Al refactorizar tenemos que cambiar el archivo `about.tsx` para llamar las funciones
+~~~tsx
+  <MyButtom actionsButton = {() => increment()} text = "Add one" />
+  <MyButtom actionsButton = {()=>decrease()} text = "Delete one" />
+~~~
+
+<hr>
+
+<a name="schema12"></a>
+
+# 12 Docu
 https://nextjs.org/
 https://nextjs.org/docs/migrating/from-gatsby#updating-packagejson-and-dependencies
 https://es.reactjs.org/docs/animation.html
 http://reactcommunity.org/react-transition-group/transition-group
+https://github.com/atlassian/react-sweet-state

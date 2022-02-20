@@ -1,9 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { useCounter } from '../lib/Counter';
+
 
 
 const Menu = () => {
-  
+  const [{count}]= useCounter();
+ 
   return (
     <ul>
       <li>
@@ -17,6 +20,11 @@ const Menu = () => {
       </li>
       <li>
         <Link href="/contact">Contact</Link>
+      </li>
+      <li>
+        Current Counter:
+          {` `}
+          {count}
       </li>
     </ul>
   );

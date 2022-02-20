@@ -2,11 +2,11 @@ import React from 'react';
 import { Button } from 'antd';
 
 
-const MyButtom = () => {
+const MyButtom = (props:any) => {
+    const {text, actionsButton} = props
 return(
-<div className="App">
-<Button type="primary">Button</Button>
-</div>
+
+    <Button type="primary" onClick={actionsButton}>{text}</Button>
 )
 };
 
