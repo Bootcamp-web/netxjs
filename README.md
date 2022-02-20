@@ -173,8 +173,69 @@ const Projects = () => (
   
   export default Projects;
 ~~~
+# 7 Transicciones de react
+- Instalar:
+~~~bash
+npm install react-transition-group @types/react-transition-group
+~~~
+- Añadimos a `_app.tsx`
+~~~ts
+import React from "react"
+import  Menu  from '../components/Menu'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
+const MyApp = (props) =>{
+    const {Component, pageProps,router}= props
+   
+    return   (
+        <>
+            <header>
+                <Menu/>       
+            </header>
+            <main>
+            <TransitionGroup className="todo-list" style={{ display: 'grid' }}>
+            <CSSTransition
+                key={router.asPath}
+                timeout={1500}
+                transitionname="app-page"
+            >
+                <div className="page">
+                    <Component {...pageProps} />
+                </div>
+            </CSSTransition>
+            </TransitionGroup>
+            </main>
+        </>
+
+    )
+}
+  
+
+export default MyApp;
+~~~
+
+- Y le añadimos estilos
+~~~html
+     <style jsx>
+        {`
+				main {
+					position: relative;
+					overflow: hidden;
+				}
+				.page {
+					transition: 0.5s all;
+					grid-row-start: 1;
+					grid-column-start: 1;
+				}
+				.exit-active {
+					transform: translateX(-100%);
+				}
+			`}
+      </style>
+~~~
 
 # Docu
 https://nextjs.org/
 https://nextjs.org/docs/migrating/from-gatsby#updating-packagejson-and-dependencies
+https://es.reactjs.org/docs/animation.html
+http://reactcommunity.org/react-transition-group/transition-group
